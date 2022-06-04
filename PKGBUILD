@@ -183,7 +183,7 @@ else
 
   cat >>../mozconfig <<END
 # probably not needed, enabled by default?
-ac_add_options --enable-optimize
+ac_add_options --enable-optimize="-march=x86-64_v3 -mtune=x86_64_v3 -O3 -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"
 
 # Arch upstream has it in their PKGBUILD, ALARM does not for aarch64:
 ac_add_options --disable-elf-hack
