@@ -6,7 +6,7 @@ pkgname=firedragon-beta-znver2
 _pkgname=FireDragon
 __pkgname=firedragon
 pkgver=101.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Librewolf fork build using custom branding, settings & KDE patches by OpenSUSE"
 arch=(x86_64 x86_64_v3 aarch64)
 backup=('usr/lib/firedragon/firedragon.cfg'
@@ -191,7 +191,6 @@ ac_add_options --disable-elf-hack
 # Optimization
 export LDFLAGS+=" -Wl,--no-keep-memory"
 export CFLAGS=" -march=znver2 -mtune=znver2 -O3 -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"  
-export RUSTFLAGS+=" --target-cpu=znver2"
 END
 fi
 
