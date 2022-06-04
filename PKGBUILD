@@ -295,7 +295,7 @@ fi
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/website-appearance-ui-rfp.patch
 
   # Native massaging path
-  patch -Np1 -i "${_librewolf_patches_dir}"/librewolf/native-messaging-registry-path.patch
+  patch -Np1 -i "${_librewolf_patches_dir}"/native-messaging-registry-path.patch
 
   #
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/handlers.patch
