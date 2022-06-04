@@ -11,6 +11,8 @@ pkgdesc="Librewolf fork build using custom branding, settings & KDE patches by O
 arch=(x86_64 x86_64_v3 aarch64)
 backup=('usr/lib/firedragon/firedragon.cfg'
         'usr/lib/firedragon/distribution/policies.json')
+conflicts=(firedragon)
+provides=(firedragon)
 license=(MPL GPL LGPL)
 url=https://gitlab.com/dr460nf1r3/settings/
 depends=(gtk3 libxt mime-types dbus-glib ffmpeg nss ttf-font libpulse kfiredragonhelper
