@@ -2,7 +2,7 @@
 # Contributor: torvic9 AT mailbox DOT org
 # Contributor: lsf
 
-pkgname=firedragon-beta-generic_v3
+pkgname=firedragon-beta-znver2
 _pkgname=FireDragon
 __pkgname=firedragon
 pkgver=101.0
@@ -183,13 +183,15 @@ else
 
   cat >>../mozconfig <<END
 # probably not needed, enabled by default?
-ac_add_options --enable-optimize="-march=x86-64_v3 -mtune=x86_64_v3 -O3 -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"
+ac_add_options --enable-optimize
 
 # Arch upstream has it in their PKGBUILD, ALARM does not for aarch64:
 ac_add_options --disable-elf-hack
 
 # might help with failing x86_64 builds?
 export LDFLAGS+=" -Wl,--no-keep-memory"
+export CFLAGS+=" -march=znver2 -mtune=znver2 -O3 -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"  
+export RUSTFLAGS=" -target-cpu=znver2"
 END
 fi
 
@@ -233,79 +235,76 @@ fi
   # Disabling Pocket
   patch -Np1 -i "${_librewolf_patches_dir}"/sed-patches/disable-pocket.patch
 
-  # allow SearchEngines option in non-ESR builds
+  # Allow SearchEngines option in non-ESR builds
   patch -Np1 -i "${_librewolf_patches_dir}"/sed-patches/allow-searchengines-non-esr.patch
 
-  # remove search extensions (experimental)
+  # Remove search extensions (experimental)
   # patch -Np1 -i "${_librewolf_patches_dir}"/search-config.patch
   cp "${srcdir}/librewolf-source/assets/search-config.json" services/settings/dumps/main/search-config.json
 
-  # stop some undesired requests (https://gitlab.com/librewolf-community/browser/common/-/issues/10)
+  # Stop some undesired requests (https://gitlab.com/librewolf-community/browser/common/-/issues/10)
   patch -Np1 -i "${_librewolf_patches_dir}"/sed-patches/stop-undesired-requests.patch
 
   # Assorted patches
   patch -Np1 -i "${_librewolf_patches_dir}"/urlbarprovider-interventions.patch
 
-  # change some hardcoded directory strings that could lead to unnecessarily
+  # Change some hardcoded directory strings that could lead to unnecessarily
   # created directories
   patch -Np1 -i "${_librewolf_patches_dir}"/mozilla_dirs.patch
 
-  # somewhat experimental patch to fix bus/dbus/remoting names to io.gitlab.librewolf
+  # Somewhat experimental patch to fix bus/dbus/remoting names to io.gitlab.librewolf
   # should not break things, buuuuuuuuuut we'll see.
   patch -Np1 -i "${_librewolf_patches_dir}"/dbus_name.patch
 
-  # allow uBlockOrigin to run in private mode by default, without user intervention.
+  # Allow uBlockOrigin to run in private mode by default, without user intervention.
   patch -Np1 -i "${_librewolf_patches_dir}"/allow-ubo-private-mode.patch
 
-  # add custom uBO assets (on first launch only)
+  # Add custom uBO assets (on first launch only)
   patch -Np1 -i "${_librewolf_patches_dir}"/custom-ubo-assets-bootstrap-location.patch
 
-  # ui patches
-
-  # remove references to firefox from the settings UI, change text in some of the links,
+  # Remove references to firefox from the settings UI, change text in some of the links,
   # explain that we force en-US and suggest enabling history near the session restore checkbox.
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/pref-naming.patch
 
-  #
+  # Remap help links
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/remap-links.patch
 
-  #
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/hide-default-browser.patch
 
   # Add LibreWolf logo to Debugging Page
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/lw-logo-devtools.patch
 
-  #
+  # Update privecy preferences
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/privacy-preferences.patch
 
-  # remove firefox references in the urlbar, when suggesting opened tabs.
+  # Remove firefox references in the urlbar, when suggesting opened tabs.
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/remove-branding-urlbar.patch
 
-  # remove cfr UI elements, as they are disabled and locked already.
+  # Remove cfr UI elements, as they are disabled and locked already.
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/remove-cfrprefs.patch
 
-  # do not display your browser is being managed by your organization in the settings.
+  # Do not display your browser is being managed by your organization in the settings.
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/remove-organization-policy-banner.patch
 
-  # hide "snippets" section from the home page settings, as it was already locked.
+  # Hide "snippets" section from the home page settings, as it was already locked.
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/remove-snippets-from-home.patch
 
-  # add warning that sanitizing exceptions are bypassed by the options in History > Clear History when LibreWolf closes > Settings
+  # Add warning that sanitizing exceptions are bypassed by the options in History > Clear History when LibreWolf closes > Settings
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/sanitizing-description.patch
 
-  # add patch to hide website appearance settings
+  # Add patch to hide website appearance settings
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/website-appearance-ui-rfp.patch
 
   # Native massaging path
   patch -Np1 -i "${_librewolf_patches_dir}"/native-messaging-registry-path.patch
 
-  #
+  # Remove unncecessary handlers
   patch -Np1 -i "${_librewolf_patches_dir}"/ui-patches/handlers.patch
 
-  # fix telemetry removal, see https://gitlab.com/librewolf-community/browser/linux/-/merge_requests/17, for example
+  # Fix telemetry removal, see https://gitlab.com/librewolf-community/browser/linux/-/merge_requests/17, for example
   patch -Np1 -i "${_librewolf_patches_dir}"/disable-data-reporting-at-compile-time.patch
 
-  # allows hiding the password manager (from the lw pref pane) / via a pref
+  # Allows hiding the password manager (from the lw pref pane) / via a pref
   patch -Np1 -i "${_librewolf_patches_dir}"/hide-passwordmgr.patch
 
   # Pref pane - custom FireDragon svg
@@ -322,8 +321,7 @@ build() {
 
   export MOZ_NOSPAM=1
   export MOZBUILD_STATE_PATH="$srcdir/mozbuild"
-  # export MOZ_ENABLE_FULL_SYMBOLS=1
-  export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=pip
+  export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system
   export PIP_NETWORK_INSTALL_RESTRICTED_VIRTUALENVS=mach # let us hope this is a working _new_ workaround for the pip env issues?
 
   # LTO needs more open files
@@ -375,6 +373,8 @@ ac_add_options --enable-lto
 ac_add_options --enable-profile-use
 ac_add_options --with-pgo-profile-path=${PWD@Q}/merged.profdata
 ac_add_options --with-pgo-jarlog=${PWD@Q}/jarlog
+ac_add_options --enable-linker=lld
+ac_add_options --disable-bootstrap
 END
 
   else
@@ -384,6 +384,8 @@ ac_add_options --enable-lto=cross
 ac_add_options --enable-profile-use=cross
 ac_add_options --with-pgo-profile-path=${PWD@Q}/merged.profdata
 ac_add_options --with-pgo-jarlog=${PWD@Q}/jarlog
+ac_add_options --enable-linker=lld
+ac_add_options --disable-bootstrap
 END
 
   fi

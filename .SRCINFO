@@ -1,4 +1,4 @@
-pkgbase = firedragon-beta-generic_v3
+pkgbase = firedragon-beta-znver2
 	pkgdesc = Librewolf fork build using custom branding, settings & KDE patches by OpenSUSE
 	pkgver = 101.0
 	pkgrel = 1
@@ -68,6 +68,8 @@ pkgbase = firedragon-beta-generic_v3
 	optdepends = libappindicator-gtk3: Global menu support for GTK apps
 	optdepends = appmenu-gtk-module-git: Appmenu for GTK only
 	optdepends = plasma5-applets-window-appmenu: Appmenu for Plasma only
+	provides = firedragon
+	conflicts = firedragon
 	options = !emptydirs
 	options = !makeflags
 	options = !strip
@@ -93,4 +95,4 @@ pkgbase = firedragon-beta-generic_v3
 	sha256sums = SKIP
 	sha256sums = SKIP
 
-pkgname = firedragon-beta-generic_v3
+pkgname = firedragon-beta-znver2
