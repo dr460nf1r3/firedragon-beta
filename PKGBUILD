@@ -164,7 +164,7 @@ END
 
 if [[ $CARCH == 'aarch64' ]]; then
   cat >>../mozconfig <<END
-# taken from manjaro build:
+# taken from Manjaro build:
 ac_add_options --enable-optimize="-g0 -O2"
 END
 
@@ -188,10 +188,10 @@ ac_add_options --enable-optimize
 # Arch upstream has it in their PKGBUILD, ALARM does not for aarch64:
 ac_add_options --disable-elf-hack
 
-# might help with failing x86_64 builds?
+# Optimization
 export LDFLAGS+=" -Wl,--no-keep-memory"
-export CFLAGS+=" -march=znver2 -mtune=znver2 -O3 -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"  
-export RUSTFLAGS=" -target-cpu=znver2"
+export CFLAGS=" -march=znver2 -mtune=znver2 -O3 -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"  
+export RUSTFLAGS+=" --target-cpu=znver2"
 END
 fi
 
