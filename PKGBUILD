@@ -189,8 +189,8 @@ ac_add_options --enable-optimize
 ac_add_options --disable-elf-hack
 
 # Optimization
-export LDFLAGS+=" -Wl,--no-keep-memory"
-export CFLAGS=" -march=znver2 -mtune=znver2 -O3 -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"  
+export LDFLAGS="-Wl,-O3,--sort-common,--as-needed,-z,relro,-z,now,-lgomp,-lpthread,--emit-relocs"
+export CFLAGS=" -march=znver2 -mtune=znver2 -O3 -fno-plt -fexceptions -fopenmp -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"  
 END
 fi
 
