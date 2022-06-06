@@ -121,9 +121,9 @@ ac_add_options --with-app-name=${__pkgname}
 ac_add_options --with-branding=browser/branding/${__pkgname}
 ac_add_options --with-distribution-id=org.garudalinux
 ac_add_options --with-unsigned-addon-scopes=app,system
-export MOZ_ADDON_SIGNING=1
+export MOZ_ADDON_SIGNING=0
 export MOZ_APP_REMOTINGNAME=${__pkgname//-/}
-export MOZ_REQUIRE_SIGNING=1
+export MOZ_REQUIRE_SIGNING=0
 
 # System libraries
 #ac_add_options --with-system-av1
@@ -156,10 +156,6 @@ ac_add_options --enable-alsa
 ac_add_options --enable-jack
 ac_add_options --enable-pulseaudio
 ac_add_options --enable-strip
-
-# options for ci / weaker build systems
-# mk_add_options MOZ_MAKE_FLAGS="-j4"
-# ac_add_options --enable-linker=gold
 END
 
 if [[ $CARCH == 'aarch64' ]]; then
@@ -172,12 +168,7 @@ END
   export CFLAGS+=" -g0"
   export CXXFLAGS+=" -g0"
   export RUSTFLAGS="-Cdebuginfo=0"
-
-  # we should have more than enough RAM on the CI spot instances.
-  # ...or maybe not?
   export LDFLAGS+=" -Wl,--no-keep-memory"
-  # patch -Np1 -i "${_librewolf_patches_dir}"/arm.patch # not required anymore?
-  # patch -Np1 -i ../${pkgver}-${pkgrel}_build-arm-libopus.patch
 
 else
 
@@ -189,8 +180,8 @@ ac_add_options --enable-optimize
 ac_add_options --disable-elf-hack
 
 # Optimization
+export CFLAGS=" -march=znver2 -mtune=znver2 -O3 -fno-plt -fexceptions -Wp -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"  
 export LDFLAGS="-Wl,-O3,--sort-common,--as-needed,-z,relro,-z,now,-lgomp,-lpthread,--emit-relocs"
-export CFLAGS=" -march=znver2 -mtune=znver2 -O3 -fno-plt -fexceptions -fopenmp -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"  
 END
 fi
 
@@ -321,7 +312,7 @@ build() {
   export MOZ_NOSPAM=1
   export MOZBUILD_STATE_PATH="$srcdir/mozbuild"
   export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system
-  export PIP_NETWORK_INSTALL_RESTRICTED_VIRTUALENVS=mach # let us hope this is a working _new_ workaround for the pip env issues?
+  export PIP_NETWORK_INSTALL_RESTRICTED_VIRTUALENVS=mach
 
   # LTO needs more open files
   ulimit -n 4096
