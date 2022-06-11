@@ -5,8 +5,8 @@
 pkgname=firedragon-beta-znver2
 _pkgname=FireDragon
 __pkgname=firedragon
-pkgver=101.0
-pkgrel=2
+pkgver=101.0.1
+pkgrel=1
 pkgdesc="Librewolf fork build using custom branding, settings & KDE patches by OpenSUSE"
 arch=(x86_64 x86_64_v3 aarch64)
 backup=('usr/lib/firedragon/firedragon.cfg'
@@ -44,7 +44,7 @@ source=(https://archive.mozilla.org/pub/firefox/releases/"$pkgver"/source/firefo
         "librewolf-settings::git+https://gitlab.com/librewolf-community/settings.git"
         "cachyos-source::git+https://github.com/CachyOS/CachyOS-Browser-Common.git")
 # source_aarch64=()
-sha256sums=('55ab5b517d58bbcbc837640263a8371cf1fba3d9f508e54537c4d2cbbfb86095'
+sha256sums=('b4c76e8bdf81f473f3e56b2f69dbe5119bba5cab38e36ab0f3f38cf0cdc4a9c2'
             'SKIP'
             '158152bdb9ef6a83bad62ae03a3d9bc8ae693b34926e53cc8c4de07df20ab22d'
             'SKIP'
@@ -187,6 +187,7 @@ fi
 
   # Upstream patches from gentoo
   msg2 "---- Gentoo patches"
+  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0001-Don-t-use-build-id.patch
   patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0002-Fortify-sources-properly.patch
   patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0003-Check-additional-plugins-dir.patch
   patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0004-bmo-847568-Support-system-harfbuzz.patch
@@ -216,11 +217,11 @@ fi
   patch -Np1 -i "${_librewolf_patches_dir}"/remove_addons.patch
 
   # Debian patch to enable global menubar
-  # patch -Np1 -i "${_librewolf_patches_dir}"/unity-menubar.patch
+  patch -Np1 -i "${_librewolf_patches_dir}"/unity-menubar.patch
 
   # KDE menu
-  patch -Np1 -i "${_cachyos_patches_dir}"/kde/0001-kde-unity.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/kde/mozilla-nongnome-proxies.patch  
+  patch -Np1 -i "${_librewolf_patches_dir}"/mozilla-kde_after_unity.patch
+  patch -Np1 -i "${_cachyos_patches_dir}"/kde/mozilla-nongnome-proxies.patch
 
   # Disabling Pocket
   patch -Np1 -i "${_librewolf_patches_dir}"/sed-patches/disable-pocket.patch
@@ -229,7 +230,6 @@ fi
   patch -Np1 -i "${_librewolf_patches_dir}"/sed-patches/allow-searchengines-non-esr.patch
 
   # Remove search extensions (experimental)
-  # patch -Np1 -i "${_librewolf_patches_dir}"/search-config.patch
   cp "${srcdir}/librewolf-source/assets/search-config.json" services/settings/dumps/main/search-config.json
 
   # Stop some undesired requests (https://gitlab.com/librewolf-community/browser/common/-/issues/10)
@@ -300,6 +300,9 @@ fi
   # Pref pane - custom FireDragon svg
   patch -Np1 -i "${_patches_dir}"/custom/librewolf-pref-pane.patch
   patch -Np1 -i "${_patches_dir}"/custom/add_firedragon_svg.patch
+
+  # Needed build fix
+  patch -Np1 -i "${_patches_dir}"/gentoo/0032-bmo-1773259-cbindgen-root_clip_chain-fix.patch
 
   rm -f "${srcdir}"/common/source_files/mozconfig
   cp -r "${srcdir}"/common/source_files/* ./
