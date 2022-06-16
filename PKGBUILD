@@ -297,6 +297,9 @@ fi
   # Allows hiding the password manager (from the lw pref pane) / via a pref
   patch -Np1 -i "${_librewolf_patches_dir}"/hide-passwordmgr.patch
 
+  # Faster multilocate
+  patch -Np1 -i "${_librewolf_patches_dir}"/faster-package-multi-locale.patch
+
   # Pref pane - custom FireDragon svg
   patch -Np1 -i "${_patches_dir}"/custom/librewolf-pref-pane.patch
   patch -Np1 -i "${_patches_dir}"/custom/add_firedragon_svg.patch
