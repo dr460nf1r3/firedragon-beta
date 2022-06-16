@@ -1,7 +1,7 @@
 pkgbase = firedragon-beta-znver2
 	pkgdesc = Librewolf fork build using custom branding, settings & KDE patches by OpenSUSE
 	pkgver = 101.0.1
-	pkgrel = 1
+	pkgrel = 2
 	url = https://gitlab.com/dr460nf1r3/settings/
 	install = firedragon.install
 	arch = x86_64
@@ -20,6 +20,7 @@ pkgbase = firedragon-beta-znver2
 	makedepends = rust
 	makedepends = xorg-server-xwayland
 	makedepends = xorg-server-xvfb
+	makedepends = mold
 	makedepends = autoconf2.13
 	makedepends = clang
 	makedepends = llvm
