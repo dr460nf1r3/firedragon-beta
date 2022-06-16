@@ -6,7 +6,7 @@ pkgname=firedragon-beta-znver2
 _pkgname=FireDragon
 __pkgname=firedragon
 pkgver=101.0.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Librewolf fork build using custom branding, settings & KDE patches by OpenSUSE"
 arch=(x86_64 x86_64_v3 aarch64)
 backup=('usr/lib/firedragon/firedragon.cfg'
@@ -101,14 +101,14 @@ mk_add_options MOZ_TELEMETRY_REPORTING=0
 ac_add_options --disable-bootstrap
 ac_add_options --enable-default-toolkit=cairo-gtk3-wayland
 ac_add_options --enable-hardening
-ac_add_options --enable-linker=lld
+ac_add_options --enable-linker=mold
 ac_add_options --enable-release
 ac_add_options --enable-rust-simd
 ac_add_options --prefix=/usr
 ac_add_options --with-wasi-sysroot=/usr/share/wasi-sysroot
 
-export CC='clang'
-export CXX='clang++'
+export CC=clang
+export CXX=clang++
 export AR=llvm-ar
 export NM=llvm-nm
 export RANLIB=llvm-ranlib
@@ -303,6 +303,9 @@ fi
 
   # Needed build fix
   patch -Np1 -i "${_patches_dir}"/gentoo/0032-bmo-1773259-cbindgen-root_clip_chain-fix.patch
+
+  # Mold linker patch by the CachyOS guys
+  patch -Np1 -i "${_cachyos_patches_dir}"/add-mold-linker.patch
 
   rm -f "${srcdir}"/common/source_files/mozconfig
   cp -r "${srcdir}"/common/source_files/* ./
