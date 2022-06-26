@@ -2,7 +2,7 @@
 # Contributor: torvic9 AT mailbox DOT org
 # Contributor: lsf
 
-pkgname=firedragon-beta-znver2
+pkgname=firedragon-beta-v3
 _pkgname=FireDragon
 __pkgname=firedragon
 pkgver=101.0.1
