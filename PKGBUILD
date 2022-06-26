@@ -2,7 +2,7 @@
 # Contributor: torvic9 AT mailbox DOT org
 # Contributor: lsf
 
-pkgname=firedragon-beta-v3
+pkgname=firedragon-beta-znver2
 _pkgname=FireDragon
 __pkgname=firedragon
 pkgver=101.0.1
@@ -121,9 +121,7 @@ ac_add_options --with-app-name=${__pkgname}
 ac_add_options --with-branding=browser/branding/${__pkgname}
 ac_add_options --with-distribution-id=org.garudalinux
 ac_add_options --with-unsigned-addon-scopes=app,system
-export MOZ_ADDON_SIGNING=0
 export MOZ_APP_REMOTINGNAME=${__pkgname//-/}
-export MOZ_REQUIRE_SIGNING=0
 
 # System libraries
 #ac_add_options --with-system-av1
@@ -180,9 +178,9 @@ ac_add_options --enable-optimize
 ac_add_options --disable-elf-hack
 
 # Optimization
-export CFLAGS="-march=x86-64-v3 -mtune=x86-64-v3 -O3 -fno-plt -fexceptions -ftree-vectorize -ftree-slp-vectorize -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wno-error -pthread -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"
+export CFLAGS="-march=znver2 -mtune=znver2 -O3 -fno-plt -fexceptions -ftree-vectorize -ftree-slp-vectorize -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wno-error -pthread -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"
 export LDFLAGS="-Wl,-O3,--sort-common,--as-needed,-z,relro,-z,now,-lgomp,-lpthread,--emit-relocs"
-export RUSTFLAGS="-C opt-level=3 -C target-cpu=x86-64-v3"
+export RUSTFLAGS="-C opt-level=3 -C target-cpu=znver2"
 END
 fi
 
@@ -321,7 +319,7 @@ build() {
 
   export MOZ_NOSPAM=1
   export MOZBUILD_STATE_PATH="$srcdir/mozbuild"
-  export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system
+  export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=pip
   export PIP_NETWORK_INSTALL_RESTRICTED_VIRTUALENVS=mach
 
   # LTO needs more open files
