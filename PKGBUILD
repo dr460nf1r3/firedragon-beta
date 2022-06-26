@@ -180,8 +180,9 @@ ac_add_options --enable-optimize
 ac_add_options --disable-elf-hack
 
 # Optimization
-export CFLAGS=" -march=znver2 -mtune=znver2 -O3 -fno-plt -fexceptions -Wp -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"  
+export CFLAGS="-march=x86-64-v3 -mtune=x86-64-v3 -O3 -fno-plt -fexceptions -ftree-vectorize -ftree-slp-vectorize -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wno-error -pthread -fstack-clash-protection -fcf-protection -fPIC -ffunction-sections -fdata-sections -fno-math-errno -pthread -pipe"
 export LDFLAGS="-Wl,-O3,--sort-common,--as-needed,-z,relro,-z,now,-lgomp,-lpthread,--emit-relocs"
+export RUSTFLAGS="-C opt-level=3 -C target-cpu=x86-64-v3"
 END
 fi
 
