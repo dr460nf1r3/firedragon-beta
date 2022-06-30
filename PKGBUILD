@@ -5,8 +5,8 @@
 pkgname=firedragon-beta-znver2
 _pkgname=FireDragon
 __pkgname=firedragon
-pkgver=101.0.1
-pkgrel=4
+pkgver=102.0
+pkgrel=1
 pkgdesc="Librewolf fork build using custom branding, settings & KDE patches by OpenSUSE"
 arch=(x86_64 x86_64_v3 aarch64)
 backup=('usr/lib/firedragon/firedragon.cfg'
@@ -17,7 +17,7 @@ license=(MPL GPL LGPL)
 url=https://gitlab.com/dr460nf1r3/settings/
 depends=(gtk3 libxt mime-types dbus-glib ffmpeg nss ttf-font libpulse kfiredragonhelper
          aom harfbuzz graphite libvpx libjpeg zlib icu libevent pipewire dav1d)
-makedepends=(unzip zip diffutils yasm mesa imake inetutils
+makedepends=(unzip zip diffutils yasm mesa imake inetutils python-pyqt5 python-cmd2
              rust xorg-server-xwayland xorg-server-xvfb mold
              autoconf2.13 clang llvm jack nodejs cbindgen nasm
              python-setuptools python-zstandard git binutils lld dump_syms
@@ -44,7 +44,7 @@ source=(https://archive.mozilla.org/pub/firefox/releases/"$pkgver"/source/firefo
         "librewolf-settings::git+https://gitlab.com/librewolf-community/settings.git"
         "cachyos-source::git+https://github.com/CachyOS/CachyOS-Browser-Common.git")
 # source_aarch64=()
-sha256sums=('b4c76e8bdf81f473f3e56b2f69dbe5119bba5cab38e36ab0f3f38cf0cdc4a9c2'
+sha256sums=('01797f04bd8d65f4c7f628d7ce832bf52a0874433886e4d0d78ef33c1ca66abf'
             'SKIP'
             '158152bdb9ef6a83bad62ae03a3d9bc8ae693b34926e53cc8c4de07df20ab22d'
             'SKIP'
@@ -89,8 +89,8 @@ ac_add_options --enable-application=browser
 mk_add_options MOZ_OBJDIR=${PWD@Q}/obj
 
 # This supposedly speeds up compilation (We test through dogfooding anyway)
-ac_add_options --disable-tests
 ac_add_options --disable-debug
+ac_add_options --disable-tests
 
 # Disables crash reporting, telemetry and other data gathering tools
 mk_add_options MOZ_CRASHREPORTER=0
@@ -107,9 +107,9 @@ ac_add_options --enable-rust-simd
 ac_add_options --prefix=/usr
 ac_add_options --with-wasi-sysroot=/usr/share/wasi-sysroot
 
+export AR=llvm-ar
 export CC=clang
 export CXX=clang++
-export AR=llvm-ar
 export NM=llvm-nm
 export RANLIB=llvm-ranlib
 
@@ -184,31 +184,15 @@ export RUSTFLAGS="-C opt-level=3 -C target-cpu=znver2"
 END
 fi
 
-  # Upstream patches from gentoo
+  # Upstream patches from gentoo (thanks CachyOS friends!)
   msg2 "---- Gentoo patches"
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0001-Don-t-use-build-id.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0002-Fortify-sources-properly.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0003-Check-additional-plugins-dir.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0004-bmo-847568-Support-system-harfbuzz.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0005-bmo-847568-Support-system-graphite2.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0006-bmo-1559213-Support-system-av1.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0007-bmo-878089-Don-t-fail-when-TERM-is-not-set.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0008-bmo-1516803-Fix-building-sandbox.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0017-Make-PGO-use-toolchain.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0018-bmo-1516081-Disable-watchdog-during-PGO-builds.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0019-bmo-1516803-force-one-LTO-partition-for-sandbox-when.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0020-Fix-building-with-PGO-when-using-GCC.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0021-libaom-Use-NEON_FLAGS-instead-of-VPX_ASFLAGS-for-lib.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0022-build-Disable-Werror.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0023-LTO-Only-enable-LTO-for-Rust-when-complete-build-use.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0024-Disable-FFVPX-with-VA-API.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0025-Enable-FLAC-on-platforms-without-ffvpx-via-ffmpeg.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0026-bmo-1670333-OpenH264-Fix-decoding-if-it-starts-on-no.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0027-bmo-1663844-OpenH264-Allow-using-OpenH264-GMP-decode.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0028-bgo-816975-fix-build-on-x86.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0029-bmo-1559213-fix-system-av1-libs.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0030-bmo-1196777-Set-GDK_FOCUS_CHANGE_MASK.patch
-  patch -Np1 -i "${_cachyos_patches_dir}"/gentoo/0031-bmo-1765361-resolve_objdir_from_virtualenv_if_mozinfo_not_ancestor.patch
+  for gentoo_patch in "${_cachyos_patches_dir}/gentoo/"*; do
+    local _patch_name="`basename "${gentoo_patch}"`"
+  if [ ${_patch_name} != "0031-bmo-1773259-cbindgen-root_clip_chain-fix.patch" ]; then
+    msg2 "Patching with ${_patch_name}.."
+    patch -Np1 -i "${gentoo_patch}"
+    fi
+  done
 
   # LibreWolf
   msg2 "---- Librewolf patches"
@@ -243,7 +227,7 @@ fi
 
   # Somewhat experimental patch to fix bus/dbus/remoting names to io.gitlab.librewolf
   # should not break things, buuuuuuuuuut we'll see.
-  patch -Np1 -i "${_librewolf_patches_dir}"/dbus_name.patch
+  # patch -Np1 -i "${_librewolf_patches_dir}"/dbus_name.patch
 
   # Allow uBlockOrigin to run in private mode by default, without user intervention.
   patch -Np1 -i "${_librewolf_patches_dir}"/allow-ubo-private-mode.patch
@@ -308,6 +292,7 @@ fi
 
   # Mold linker patch by the CachyOS guys
   patch -Np1 -i "${_cachyos_patches_dir}"/add-mold-linker.patch
+  patch -Np1 -i "${_cachyos_patches_dir}"/zstandard-0.18.0.patch
 
   rm -f "${srcdir}"/common/source_files/mozconfig
   cp -r "${srcdir}"/common/source_files/* ./
