@@ -99,7 +99,7 @@ mk_add_options MOZ_SERVICES_HEALTHREPORT=0
 mk_add_options MOZ_TELEMETRY_REPORTING=0
 
 ac_add_options --disable-bootstrap
-ac_add_options --enable-default-toolkit=cairo-gtk3-wayland
+ac_add_options --enable-default-toolkit=cairo-gtk3-x11-wayland
 ac_add_options --enable-hardening
 ac_add_options --enable-linker=mold
 ac_add_options --enable-release
@@ -126,14 +126,14 @@ export MOZ_APP_REMOTINGNAME=${__pkgname//-/}
 # System libraries
 #ac_add_options --with-system-av1
 #ac_add_options --with-system-graphite2
+#ac_add_options --with-system-harfbuzz
+#ac_add_options --with-system-icu
+#ac_add_options --with-system-jpeg
 #ac_add_options --with-system-libevent
-ac_add_options --with-system-harfbuzz
-ac_add_options --with-system-icu
-ac_add_options --with-system-jpeg
-ac_add_options --with-system-libvpx
+#ac_add_options --with-system-libvpx
+#ac_add_options --with-system-zlib
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
-ac_add_options --with-system-zlib
 
 # Features
 ac_add_options --disable-crashreporter
@@ -152,6 +152,7 @@ ac_add_options --disable-webspeech
 ac_add_options --disable-webspeechtestbackend
 ac_add_options --enable-alsa
 ac_add_options --enable-jack
+ac_add_options --enable-optimize=-O3
 ac_add_options --enable-pulseaudio
 ac_add_options --enable-strip
 END
@@ -203,8 +204,8 @@ fi
   patch -Np1 -i "${_librewolf_patches_dir}"/unity-menubar.patch
 
   # KDE menu
-  # patch -Np1 -i "${_librewolf_patches_dir}"/mozilla-kde_after_unity.patch
-  # patch -Np1 -i "${_cachyos_patches_dir}"/kde/mozilla-nongnome-proxies.patch
+  patch -Np1 -i "${_librewolf_patches_dir}"/mozilla-kde_after_unity.patch
+  patch -Np1 -i "${_cachyos_patches_dir}"/kde/mozilla-nongnome-proxies.patch
 
   # Disabling Pocket
   patch -Np1 -i "${_librewolf_patches_dir}"/sed-patches/disable-pocket.patch
@@ -304,7 +305,7 @@ build() {
 
   export MOZ_NOSPAM=1
   export MOZBUILD_STATE_PATH="$srcdir/mozbuild"
-  export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=pip
+  export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system
   export PIP_NETWORK_INSTALL_RESTRICTED_VIRTUALENVS=mach
 
   # LTO needs more open files
