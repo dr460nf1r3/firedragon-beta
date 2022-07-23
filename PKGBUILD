@@ -6,7 +6,7 @@ pkgname=firedragon-beta-znver2
 _pkgname=FireDragon
 __pkgname=firedragon
 pkgver=102.0.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Librewolf fork build using custom branding, settings & KDE patches by OpenSUSE"
 arch=(x86_64 x86_64_v3 aarch64)
 backup=('usr/lib/firedragon/firedragon.cfg'
@@ -16,7 +16,7 @@ provides=(firedragon)
 license=(MPL GPL LGPL)
 url=https://gitlab.com/dr460nf1r3/settings/
 depends=(gtk3 libxt mime-types dbus-glib ffmpeg nss ttf-font libpulse kfiredragonhelper
-         aom harfbuzz graphite libvpx libjpeg zlib icu libevent pipewire dav1d)
+         aom icu pipewire dav1d)
 makedepends=(unzip zip diffutils yasm mesa imake inetutils python-pyqt5 python-cmd2
              rust xorg-server-xwayland xorg-server-xvfb mold
              autoconf2.13 clang llvm jack nodejs cbindgen nasm
@@ -124,14 +124,7 @@ ac_add_options --with-unsigned-addon-scopes=app,system
 export MOZ_APP_REMOTINGNAME=${__pkgname//-/}
 
 # System libraries
-#ac_add_options --with-system-av1
-#ac_add_options --with-system-graphite2
-#ac_add_options --with-system-harfbuzz
-#ac_add_options --with-system-icu
-#ac_add_options --with-system-jpeg
-#ac_add_options --with-system-libevent
-#ac_add_options --with-system-libvpx
-#ac_add_options --with-system-zlib
+ac_add_options --with-system-icu
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 
