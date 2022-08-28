@@ -5,7 +5,7 @@
 pkgname=firedragon-beta-znver2
 _pkgname=FireDragon
 __pkgname=firedragon
-pkgver=103.0.2
+pkgver=104.0
 pkgrel=1
 pkgdesc="Librewolf fork build using custom branding, settings & KDE patches by OpenSUSE"
 arch=(x86_64 x86_64_v3 aarch64)
@@ -21,7 +21,7 @@ makedepends=(unzip zip diffutils yasm mesa imake inetutils python-pyqt5 python-c
              rust xorg-server-xwayland xorg-server-xvfb mold pciutils
              autoconf2.13 clang llvm jack nodejs cbindgen nasm
              python-setuptools python-zstandard git binutils lld dump_syms
-             'wasi-compiler-rt>13' 'wasi-libc>=1:0+258+30094b6' 'wasi-libc++>13' 'wasi-libc++abi>13')
+             'wasi-compiler-rt>13' 'wasi-libc>=1:0+258+30094b6' 'wasi-libc++>13' 'wasi-libc++abi>13' pciutils)
 optdepends=('firejail-git: Sandboxing the browser using the included profiles'
             'profile-sync-daemon: Load the browser profile into RAM'
             'whoogle: Searching the web using a locally running Whoogle instance'
@@ -44,7 +44,7 @@ source=(https://archive.mozilla.org/pub/firefox/releases/"$pkgver"/source/firefo
         "librewolf-settings::git+https://gitlab.com/librewolf-community/settings.git"
         "cachyos-source::git+https://github.com/CachyOS/CachyOS-Browser-Common.git")
 # source_aarch64=()
-sha256sums=('766183e8e39c17a84305a85da3237919ffaeb018c6c9d97a7324aea51bd453aa'
+sha256sums=('1a294a651dc6260f9a72a3ab9f10e7792a4ab41a9cfa8527ad3dd9979cdc98ce'
             'SKIP'
             '158152bdb9ef6a83bad62ae03a3d9bc8ae693b34926e53cc8c4de07df20ab22d'
             'SKIP'
@@ -118,7 +118,6 @@ ac_add_options --enable-linker=mold
 ac_add_options --enable-release
 ac_add_options --enable-rust-simd
 ac_add_options --prefix=/usr
-ac_add_options --with-wasi-sysroot=/usr/share/wasi-sysroot
 
 export AR=llvm-ar
 export CC=clang
@@ -161,6 +160,9 @@ ac_add_options --enable-jack
 ac_add_options --enable-optimize=-O3
 ac_add_options --enable-pulseaudio
 ac_add_options --enable-strip
+
+# wasi
+ac_add_options --with-wasi-sysroot=/usr/share/wasi-sysroot
 END
 
 if [[ $CARCH == 'aarch64' ]]; then
@@ -223,7 +225,7 @@ fi
   cp "${srcdir}/librewolf-source/assets/search-config.json" services/settings/dumps/main/search-config.json
 
   # Stop some undesired requests (https://gitlab.com/librewolf-community/browser/common/-/issues/10)
-  patch -Np1 -i "${_librewolf_patches_dir}"/sed-patches/stop-undesired-requests.patch
+  # patch -Np1 -i "${_librewolf_patches_dir}"/sed-patches/stop-undesired-requests.patch
 
   # Assorted patches
   patch -Np1 -i "${_librewolf_patches_dir}"/urlbarprovider-interventions.patch
@@ -294,14 +296,10 @@ fi
   patch -Np1 -i "${_patches_dir}"/custom/librewolf-pref-pane.patch
   patch -Np1 -i "${_patches_dir}"/custom/add_firedragon_svg.patch
 
-  # Needed build fix
-  # patch -Np1 -i "${_patches_dir}"/gentoo/0032-bmo-1773259-cbindgen-root_clip_chain-fix.patch
-
   # Mold linker patch by the CachyOS guys
   patch -Np1 -i "${_cachyos_patches_dir}"/add-mold-linker.patch
   patch -Np1 -i "${_cachyos_patches_dir}"/zstandard-0.18.0.patch
   patch -Np1 -i "${_patches_dir}"/custom/glibc236.patch
-  patch -Np1 -i "${_patches_dir}"/custom/rust163.patch
 
   rm -f "${srcdir}"/common/source_files/mozconfig
   cp -r "${srcdir}"/common/source_files/* ./
@@ -365,7 +363,7 @@ ac_add_options --enable-lto
 ac_add_options --enable-profile-use
 ac_add_options --with-pgo-profile-path=${PWD@Q}/merged.profdata
 ac_add_options --with-pgo-jarlog=${PWD@Q}/jarlog
-ac_add_options --enable-linker=lld
+ac_add_options --enable-linker=mold
 ac_add_options --disable-bootstrap
 END
 
@@ -376,7 +374,7 @@ ac_add_options --enable-lto=cross
 ac_add_options --enable-profile-use=cross
 ac_add_options --with-pgo-profile-path=${PWD@Q}/merged.profdata
 ac_add_options --with-pgo-jarlog=${PWD@Q}/jarlog
-ac_add_options --enable-linker=lld
+ac_add_options --enable-linker=mold
 ac_add_options --disable-bootstrap
 END
 
